@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AboutKRLX" />
-        <activity android:name=".firebase.LoginActivity"></activity>
+        <activity android:name=".firebase.LoginActivity"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

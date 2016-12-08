@@ -134,7 +134,6 @@ public class LoginActivity extends BaseActivity {
                         hideProgressDialog();
 
                         if (task.isSuccessful()) {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
                             Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(),

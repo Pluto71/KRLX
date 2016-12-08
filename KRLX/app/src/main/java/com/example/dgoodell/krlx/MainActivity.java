@@ -1,7 +1,11 @@
 package com.example.dgoodell.krlx;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,11 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.dgoodell.krlx.firebase.LoginActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private MediaPlayer krlxStream;
+    private boolean playing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +30,50 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        setupFab();
-
+        krlxStream = null;
+        playing = false;
+        setupFab();
+        setupMediaplayer();
         setupNavDrawer(toolbar);
+    }
 
+    private void setupFab() {
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (playing) {
+                    playing = false;
+                    krlxStream.pause();
+                    fab.setImageResource(R.drawable.playicon);
+                } else {
+                    playing = true;
+                    krlxStream.start();
+                    fab.setImageResource(R.drawable.pauseicon);
+                }
+            }
+        });
+    }
+
+    public void setupMediaplayer() {
+
+        // Loading screen or animation or something here
+
+
+        try {
+            String url = "http://209.126.66.166:10999/192data.opus"; // your URL here
+
+            if (krlxStream == null) {
+                krlxStream = new MediaPlayer();
+            }
+
+            krlxStream.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            krlxStream.setDataSource(url);
+            krlxStream.prepare(); // might take long! (for buffering, etc)
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupNavDrawer(Toolbar toolbar) {
@@ -89,26 +136,14 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_about_krlx) {
+            Intent aboutIntent = new Intent(this, AboutKRLX.class);
+            startActivity(aboutIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-//    private void setupFab() {
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-//    }
 
 }
